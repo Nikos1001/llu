@@ -9,11 +9,15 @@ typedef struct {
     void* curr;
 } llu_arena;
 
-llu_arena* llu_makeArena() {
+llu_arena* llu_makeSizedArena(size_t size) {
     llu_arena* arena = (llu_arena*)malloc(sizeof(llu_arena));
-    arena->base = malloc((size_t)1024 * 1024 * 1024 * 1024);
+    arena->base = malloc(size);
     arena->curr = arena->base;
     return arena;
+}
+
+llu_arena* llu_makeArena() {
+    return llu_makeSizedArena((size_t)1024 * 1024 * 1024 * 1024);
 }
 
 void llu_freeArena(llu_arena* arena) {
