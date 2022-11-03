@@ -9,6 +9,15 @@ typedef struct {
     void* curr;
 } llu_arena;
 
+llu_arena* llu_makeSizedArena(size_t size);
+llu_arena* llu_makeArena();
+void llu_freeArena(llu_arena* arena);
+void* llu_arenaAlloc(llu_arena* arena, size_t size);
+void llu_arenaPop(llu_arena* arena, void* ptr);
+void llu_arenaClear(llu_arena* arena);
+
+#ifdef LLU_IMPLEMENTATION
+
 llu_arena* llu_makeSizedArena(size_t size) {
     llu_arena* arena = (llu_arena*)malloc(sizeof(llu_arena));
     arena->base = malloc(size);
@@ -43,5 +52,7 @@ void llu_arenaPop(llu_arena* arena, void* ptr) {
 void llu_arenaClear(llu_arena* arena) {
     llu_arenaPop(arena, arena->base);
 }
+
+#endif
 
 #endif
