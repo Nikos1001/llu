@@ -12,7 +12,8 @@ typedef struct {
 llu_arena* llu_makeSizedArena(size_t size);
 llu_arena* llu_makeArena();
 void llu_freeArena(llu_arena* arena);
-void* llu_arenaAlloc(llu_arena* arena, size_t size);
+void* llu_arenaPush(llu_arena* arena, size_t size);
+#define llu_arenaAlloc(arena, type) llu_arenaPush(arena, sizeof(type))
 void llu_arenaPop(llu_arena* arena, void* ptr);
 void llu_arenaClear(llu_arena* arena);
 
@@ -34,7 +35,7 @@ void llu_freeArena(llu_arena* arena) {
     free(arena);
 }
 
-void* llu_arenaAlloc(llu_arena* arena, size_t size) {
+void* llu_arenaPush(llu_arena* arena, size_t size) {
 
     // ensure size is a multiple of 8
     size += 7;
