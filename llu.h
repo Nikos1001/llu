@@ -14,7 +14,7 @@ llu_arena* llu_makeArena();
 void llu_freeArena(llu_arena* arena);
 void* llu_arenaPush(llu_arena* arena, size_t size);
 #define llu_arenaAlloc(arena, type) llu_arenaPush(arena, sizeof(type))
-#define llu_arenaAllocArena(arena, type, cnt) llu_arenaPush(arena, sizeof(type) * cnt)
+#define llu_arenaAllocArray(arena, type, cnt) llu_arenaPush(arena, sizeof(type) * cnt)
 void llu_arenaPop(llu_arena* arena, void* ptr);
 void llu_arenaClear(llu_arena* arena);
 
