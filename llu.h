@@ -18,6 +18,8 @@ void* llu_arenaPush(llu_arena* arena, size_t size);
 void llu_arenaPop(llu_arena* arena, void* ptr);
 void llu_arenaClear(llu_arena* arena);
 
+#define llu_stringify(...) #__VA_ARGS__
+
 #ifdef LLU_IMPLEMENTATION
 
 llu_arena* llu_makeSizedArena(size_t size) {
