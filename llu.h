@@ -5,6 +5,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+extern double llu_timerStart[256];
+extern int llu_currTimer;
+
+void llu_beginTimer();
+float llu_endTimer();
+void llu_profile(const char* name);
+
 typedef struct {
     void* base;
     void* curr;
@@ -49,6 +56,32 @@ void llu_deallocResource(llu_handle handle);
 #define llu_stringify(...) #__VA_ARGS__
 
 #ifdef LLU_IMPLEMENTATION
+
+#include <sys/time.h>
+#include <stdio.h>
+
+double llu_timerStart[256];
+int llu_currTimer = 0;
+
+static double currTime() {
+    struct timeval t;
+    gettimeofday(&t, NULL);
+    return (double)t.tv_sec + (double)t.tv_usec / 1000000.0f;
+}
+
+void llu_beginTimer() {
+    llu_timerStart[llu_currTimer] = currTime();
+    llu_currTimer++;
+}
+
+float llu_endTimer() {
+    llu_currTimer--;
+    return currTime() - llu_timerStart[llu_currTimer]; 
+}
+
+void llu_profile(const char* name) {
+    printf("%s: %gs\n", name, llu_endTimer());
+}
 
 llu_arena* llu_makeSizedArena(size_t size) {
     llu_arena* arena = (llu_arena*)malloc(sizeof(llu_arena));
