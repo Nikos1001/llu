@@ -205,7 +205,7 @@ llu_str llu_readFile(llu_arena* arena, llu_str path) {
     // TODO: implement virtual file system & single exec application support
     FILE* f = fopen(path.str, "rb");
     if(f == NULL)
-        return NULL;
+        return (llu_str){0};
     fseek(f, 0L, SEEK_END);
     size_t fileSize = ftell(f);
     rewind(f);
