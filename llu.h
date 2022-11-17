@@ -4,6 +4,9 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+#include <sys/time.h>
+#include <stdio.h>
 
 extern double llu_timerStart[256];
 extern int llu_currTimer;
@@ -64,13 +67,8 @@ typedef struct {
 } llu_str;
 
 llu_str llu_makeString(const char* str);
-llu_str llu_readFile(llu_arena* arena, llu_str path);
-llu_str llu_joinPath(llu_arena* arena, llu_str p1, llu_str p2);
 
 #ifdef LLU_IMPLEMENTATION
-
-#include <sys/time.h>
-#include <stdio.h>
 
 double llu_timerStart[256];
 int llu_currTimer = 0;
@@ -192,52 +190,11 @@ void llu_deallocResource(llu_handle handle) {
     handle.pool->firstFree = header;
 }
 
-#include <string.h>
-
 llu_str llu_makeString(const char* str) {
     llu_str s;
     s.len = strlen(str);
     s.str = str;
     return s;
-}
-
-llu_str llu_readFile(llu_arena* arena, llu_str path) {
-    // TODO: implement virtual file system & single exec application support
-    FILE* f = fopen(path.str, "rb");
-    if(f == NULL)
-        return (llu_str){0};
-    fseek(f, 0L, SEEK_END);
-    size_t fileSize = ftell(f);
-    rewind(f);
-    char* buffer = llu_arenaPush(arena, fileSize + 1);
-    fread(buffer, sizeof(char), fileSize, f);
-    buffer[fileSize] = '\0';
-    fclose(f);
-    
-    llu_str res;
-    res.len = fileSize;
-    res.str = buffer;
-
-    return res; 
-}
-
-llu_str llu_joinPath(llu_arena* arena, llu_str p1, llu_str p2) {
-    int resLen = p1.len + p2.len;
-    bool addInfixSlash = false;
-    if(p1.len > 0 && p1.str[p1.len - 1] != '/') {
-        addInfixSlash = true;
-        resLen++;
-    }
-    llu_str res;
-    res.len = resLen;
-    res.str = llu_arenaPush(arena, resLen + 1);
-    memcpy(res.str, p1.str, p1.len);
-    memcpy(res.str + resLen - p2.len, p2.str, p2.len);
-    res.str[resLen] = '\0';
-    if(addInfixSlash) {
-        res.str[p1.len] = '/';
-    }
-    return res;
 }
 
 #endif
